@@ -7,11 +7,13 @@ class Intcode
     HALT = 99
   end
 
-  def initialize(intcode, noun = nil, verb = nil)
+  def initialize(intcode, noun = nil, verb = nil, inputter = STDIN, outputter = STDOUT)
     @intcode = intcode
     @intcode[1] = noun if noun
     @intcode[2] = verb if verb
     @ip = 0
+    @inputter = inputter
+    @outputter = outputter
   end
 
   def run
@@ -40,14 +42,14 @@ class Intcode
         @intcode.fetch(param1_address) * @intcode.fetch(param2_address)
       4
     when Opcode::INPUT
-      value = gets.chomp.to_i
+      value = @inputter.gets.chomp.to_i
       dest_address = @intcode.fetch(@ip + 1)
       @intcode[dest_address] = value
       2
     when Opcode::OUTPUT
       output_address = @intcode.fetch(@ip + 1)
       output_value = @intcode.fetch(output_address)
-      puts output_value
+      @outputter.puts output_value
       2
     when Opcode::HALT
       0
