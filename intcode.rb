@@ -7,6 +7,11 @@ class Intcode
     HALT = 99
   end
 
+  module ParamMode
+    POSITION = 0
+    IMMEDIATE = 1
+  end
+
   def initialize(intcode, noun = nil, verb = nil, inputter = STDIN, outputter = STDOUT)
     @intcode = intcode
     @intcode[1] = noun if noun
@@ -18,28 +23,41 @@ class Intcode
 
   def run
     while @intcode[@ip] != Opcode::HALT
-      current_opcode = @intcode[@ip]
-      move_count = execute(current_opcode)
+      current_instruction = @intcode[@ip]
+      move_count = execute(current_instruction)
       @ip += move_count
     end
     @intcode
   end
 
-  def execute(opcode)
+  def param_value(index, param_mode)
+    case param_mode
+    when ParamMode::POSITION
+      param_address = @intcode.fetch index
+      @intcode.fetch param_address
+    when ParamMode::IMMEDIATE
+      @intcode.fetch index
+    else
+      raise "Invalid param mode"
+    end
+  end
+
+  def execute(instruction)
+    instruction = instruction.to_s.rjust(5, '0')
+    opcode = instruction[3..4].to_i
+    param_modes = instruction[0..2].split('').map(&:to_i)
     case opcode
     when Opcode::ADD
-      param1_address = @intcode.fetch(@ip + 1)
-      param2_address = @intcode.fetch(@ip + 2)
+      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
+      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
       dest_address = @intcode.fetch(@ip + 3)
-      @intcode[dest_address] =
-        @intcode.fetch(param1_address) + @intcode.fetch(param2_address)
+      @intcode[dest_address] = param1_value + param2_value
       4
     when Opcode::MULT
-      param1_address = @intcode.fetch(@ip + 1)
-      param2_address = @intcode.fetch(@ip + 2)
+      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
+      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
       dest_address = @intcode.fetch(@ip + 3)
-      @intcode[dest_address] =
-        @intcode.fetch(param1_address) * @intcode.fetch(param2_address)
+      @intcode[dest_address] = param1_value * param2_value
       4
     when Opcode::INPUT
       value = @inputter.gets.chomp.to_i
@@ -53,6 +71,8 @@ class Intcode
       2
     when Opcode::HALT
       0
+    else
+      raise "Invalid opcode"
     end
   end
 end

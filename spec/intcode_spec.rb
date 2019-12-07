@@ -60,5 +60,10 @@ RSpec.describe Intcode do
       Intcode.new([3,0,4,0,99], nil, nil, inputter, outputter).run
       expect(outputter.value).to eq 1234
     end
+
+    it 'works for day 5' do
+      expect(Intcode.new([1002,4,3,4,33]).run)
+        .to eq [1002,4,3,4,99]
+    end
   end
 end
