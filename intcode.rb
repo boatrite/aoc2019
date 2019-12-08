@@ -1,3 +1,5 @@
+require 'io/console'
+
 class Intcode
   module Opcode
     ADD = 1
@@ -19,6 +21,9 @@ class Intcode
     @ip = 0
     @inputter = inputter
     @outputter = outputter
+
+    @history = [intcode.clone]
+    @step = 0
   end
 
   def run
@@ -26,6 +31,9 @@ class Intcode
       current_instruction = @intcode[@ip]
       move_count = execute(current_instruction)
       @ip += move_count
+
+      @step += 1
+      @history[@step] = @intcode.clone
     end
     @intcode
   end
@@ -39,6 +47,33 @@ class Intcode
       @intcode.fetch index
     else
       raise "Invalid param mode"
+    end
+  end
+
+  def print_intcode(intcode)
+    intcode.each_slice(30).map { |arr|
+      arr.join(", ")
+    }.join("\n")
+  end
+
+  def debug
+    i = -1
+    loop do
+      command = STDIN.getch
+      case command
+      when 'q'
+        break
+      when 'a'
+        i -= 1
+        i = 0 if i < 0
+      when 'd'
+        i += 1
+        i = @history.length - 1 if i > @history.length - 1
+      end
+
+      system 'clear'
+      puts "i: #{i}"
+      puts print_intcode @history[i]
     end
   end
 
