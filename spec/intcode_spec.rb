@@ -133,5 +133,31 @@ RSpec.describe Intcode do
         expect(outputter.value).to eq 1
       end
     end
+
+    context 'jump opcodes' do
+      it 'position mode works' do
+        inputter = inputter_class.new "0\n"
+        outputter = outputter_class.new
+        Intcode.new([3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 0
+
+        inputter = inputter_class.new "7\n"
+        outputter = outputter_class.new
+        Intcode.new([3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 1
+      end
+
+      it 'immediate mode works' do
+        inputter = inputter_class.new "0\n"
+        outputter = outputter_class.new
+        Intcode.new([3,3,1105,-1,9,1101,0,0,12,4,12,99,1], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 0
+
+        inputter = inputter_class.new "7\n"
+        outputter = outputter_class.new
+        Intcode.new([3,3,1105,-1,9,1101,0,0,12,4,12,99,1], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 1
+      end
+    end
   end
 end

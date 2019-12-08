@@ -6,6 +6,8 @@ class Intcode
     MULT = 2
     INPUT = 3
     OUTPUT = 4
+    JUMP_IF_TRUE = 5
+    JUMP_IF_FALSE = 6
     LESS_THAN = 7
     EQUALS = 8
     HALT = 99
@@ -65,6 +67,22 @@ class Intcode
       output_value = param_value(@ip + 1, param_modes.fetch(-1))
       @outputter.puts output_value
       @ip += 2
+    when Opcode::JUMP_IF_TRUE
+      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
+      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
+      if param1_value == 0
+        @ip += 3
+      else
+        @ip = param2_value
+      end
+    when Opcode::JUMP_IF_FALSE
+      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
+      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
+      if param1_value == 0
+        @ip = param2_value
+      else
+        @ip += 3
+      end
     when Opcode::LESS_THAN
       param1_value = param_value(@ip + 1, param_modes.fetch(-1))
       param2_value = param_value(@ip + 2, param_modes.fetch(-2))
