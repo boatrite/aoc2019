@@ -100,8 +100,7 @@ class Intcode
       @intcode[dest_address] = value
       2
     when Opcode::OUTPUT
-      output_address = @intcode.fetch(@ip + 1)
-      output_value = @intcode.fetch(output_address)
+      output_value = param_value(@ip + 1, param_modes.fetch(-1))
       @outputter.puts output_value
       2
     when Opcode::HALT
