@@ -7,8 +7,12 @@ require_relative './intcode'
 intcode_program = File.read("./day7input.txt").split(",").map(&:to_i)
 
 class Inputter
-  def initialize(phase_setting, input_signal)
-    @inputs = [input_signal, phase_setting].map { |x| "#{x}\n" }
+  def initialize(phase_setting, previous_amp)
+    if previous_amp.nil?
+      @inputs = [0, phase_setting]
+    else
+      @inputs = [previous_amp.call, phase_setting]
+    end
   end
 
   def gets
@@ -25,22 +29,29 @@ Outputter = Struct.new(:value) do
 end
 
 class Amplifier
-  def self.call(phase_setting, input_signal, intcode_program)
-    inputter = Inputter.new(phase_setting, input_signal)
-    outputter = Outputter.new
-    intcode = Intcode.new(intcode_program, nil, nil, inputter, outputter)
-    intcode.run
-    outputter.value
+  def initialize(phase_setting, intcode_program, previous_amp)
+    phase_setting = phase_setting
+    intcode_program = intcode_program
+    previous_amp = previous_amp
+
+    inputter = Inputter.new(phase_setting, previous_amp)
+    @outputter = Outputter.new
+    @intcode = Intcode.new(intcode_program, nil, nil, inputter, @outputter)
+  end
+
+  def call
+    @intcode.run
+    @outputter.value
   end
 end
 
 max_output = [0,1,2,3,4].permutation.map { |phase_settings|
-  signal = 0
-  signal = Amplifier.call phase_settings[0], signal, intcode_program.clone
-  signal = Amplifier.call phase_settings[1], signal, intcode_program.clone
-  signal = Amplifier.call phase_settings[2], signal, intcode_program.clone
-  signal = Amplifier.call phase_settings[3], signal, intcode_program.clone
-  signal = Amplifier.call phase_settings[4], signal, intcode_program.clone
+  amp_a = Amplifier.new(phase_settings[0], intcode_program.clone, nil)
+  amp_b = Amplifier.new(phase_settings[1], intcode_program.clone, amp_a)
+  amp_c = Amplifier.new(phase_settings[2], intcode_program.clone, amp_b)
+  amp_d = Amplifier.new(phase_settings[3], intcode_program.clone, amp_c)
+  amp_e = Amplifier.new(phase_settings[4], intcode_program.clone, amp_d)
+  amp_e.call
 }.max
 
 puts max_output

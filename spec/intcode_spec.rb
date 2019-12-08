@@ -82,6 +82,11 @@ RSpec.describe Intcode do
       OUTPUT
     end
 
+    it 'day7 executes correctly' do
+      output = `./day7.rb`
+      expect(output).to eq "262086\n"
+    end
+
     context 'EQUALS opcode' do
       it 'position mode works' do
         inputter = inputter_class.new 8
