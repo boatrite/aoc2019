@@ -18,7 +18,7 @@ class Intcode
     IMMEDIATE = 1
   end
 
-  def initialize(intcode, noun = nil, verb = nil, inputter = STDIN, outputter = STDOUT)
+  def initialize(intcode, noun = nil, verb = nil, inputter = nil, outputter = STDOUT)
     @intcode = intcode
     @intcode[1] = noun if noun
     @intcode[2] = verb if verb
@@ -59,7 +59,8 @@ class Intcode
       @intcode[dest_address] = param1_value * param2_value
       @ip += 4
     when Opcode::INPUT
-      value = @inputter.gets.chomp.to_i
+      raise "Hit INPUT opcode, but `inputter` is nil" if @inputter.nil?
+      value = @inputter.gets
       dest_address = @intcode.fetch(@ip + 1)
       @intcode[dest_address] = value
       @ip += 2

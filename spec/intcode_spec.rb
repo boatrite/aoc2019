@@ -55,7 +55,7 @@ RSpec.describe Intcode do
     end
 
     it 'input & output opcodes' do
-      inputter = inputter_class.new "1234\n"
+      inputter = inputter_class.new 1234
       outputter = outputter_class.new
       Intcode.new([3,0,4,0,99], nil, nil, inputter, outputter).run
       expect(outputter.value).to eq 1234
@@ -84,24 +84,24 @@ RSpec.describe Intcode do
 
     context 'EQUALS opcode' do
       it 'position mode works' do
-        inputter = inputter_class.new "8\n"
+        inputter = inputter_class.new 8
         outputter = outputter_class.new
         Intcode.new([3,9,8,9,10,9,4,9,99,-1,8], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 1
 
-        inputter = inputter_class.new "7\n"
+        inputter = inputter_class.new 7
         outputter = outputter_class.new
         Intcode.new([3,9,8,9,10,9,4,9,99,-1,8], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 0
       end
 
       it 'immediate mode works' do
-        inputter = inputter_class.new "8\n"
+        inputter = inputter_class.new 8
         outputter = outputter_class.new
         Intcode.new([3,3,1108,-1,8,3,4,3,99], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 1
 
-        inputter = inputter_class.new "7\n"
+        inputter = inputter_class.new 7
         outputter = outputter_class.new
         Intcode.new([3,3,1108,-1,8,3,4,3,99], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 0
@@ -110,24 +110,24 @@ RSpec.describe Intcode do
 
     context 'LESS_THAN opcode' do
       it 'position mode works' do
-        inputter = inputter_class.new "8\n"
+        inputter = inputter_class.new 8
         outputter = outputter_class.new
         Intcode.new([3,9,7,9,10,9,4,9,99,-1,8], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 0
 
-        inputter = inputter_class.new "7\n"
+        inputter = inputter_class.new 7
         outputter = outputter_class.new
         Intcode.new([3,9,7,9,10,9,4,9,99,-1,8], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 1
       end
 
       it 'immediate mode works' do
-        inputter = inputter_class.new "8\n"
+        inputter = inputter_class.new 8
         outputter = outputter_class.new
         Intcode.new([3,3,1107,-1,8,3,4,3,99], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 0
 
-        inputter = inputter_class.new "7\n"
+        inputter = inputter_class.new 7
         outputter = outputter_class.new
         Intcode.new([3,3,1107,-1,8,3,4,3,99], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 1
@@ -136,24 +136,24 @@ RSpec.describe Intcode do
 
     context 'jump opcodes' do
       it 'position mode works' do
-        inputter = inputter_class.new "0\n"
+        inputter = inputter_class.new 0
         outputter = outputter_class.new
         Intcode.new([3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 0
 
-        inputter = inputter_class.new "7\n"
+        inputter = inputter_class.new 7
         outputter = outputter_class.new
         Intcode.new([3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 1
       end
 
       it 'immediate mode works' do
-        inputter = inputter_class.new "0\n"
+        inputter = inputter_class.new 0
         outputter = outputter_class.new
         Intcode.new([3,3,1105,-1,9,1101,0,0,12,4,12,99,1], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 0
 
-        inputter = inputter_class.new "7\n"
+        inputter = inputter_class.new 7
         outputter = outputter_class.new
         Intcode.new([3,3,1105,-1,9,1101,0,0,12,4,12,99,1], nil, nil, inputter, outputter).run
         expect(outputter.value).to eq 1

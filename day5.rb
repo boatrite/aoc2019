@@ -10,5 +10,5 @@ Inputter = Struct.new(:value) do
 end
 
 intcode = File.read("day5input.txt").split(",").map(&:to_i)
-inputter = Inputter.new("1\n")
+inputter = Inputter.new(1)
 Intcode.new(intcode, nil, nil, inputter).run
