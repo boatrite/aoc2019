@@ -37,6 +37,39 @@ class Intcode
     @intcode
   end
 
+  def execute(instruction)
+    instruction = instruction.to_s.rjust(5, '0')
+    opcode = instruction[3..4].to_i
+    param_modes = instruction[0..2].split('').map(&:to_i)
+    case opcode
+    when Opcode::ADD
+      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
+      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
+      dest_address = @intcode.fetch(@ip + 3)
+      @intcode[dest_address] = param1_value + param2_value
+      @ip += 4
+    when Opcode::MULT
+      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
+      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
+      dest_address = @intcode.fetch(@ip + 3)
+      @intcode[dest_address] = param1_value * param2_value
+      @ip += 4
+    when Opcode::INPUT
+      value = @inputter.gets.chomp.to_i
+      dest_address = @intcode.fetch(@ip + 1)
+      @intcode[dest_address] = value
+      @ip += 2
+    when Opcode::OUTPUT
+      output_value = param_value(@ip + 1, param_modes.fetch(-1))
+      @outputter.puts output_value
+      @ip += 2
+    else
+      raise "Invalid opcode"
+    end
+  end
+
+  private
+
   def param_value(index, param_mode)
     case param_mode
     when ParamMode::POSITION
@@ -73,37 +106,6 @@ class Intcode
       system 'clear'
       puts "i: #{i}"
       puts print_intcode @history[i]
-    end
-  end
-
-  def execute(instruction)
-    instruction = instruction.to_s.rjust(5, '0')
-    opcode = instruction[3..4].to_i
-    param_modes = instruction[0..2].split('').map(&:to_i)
-    case opcode
-    when Opcode::ADD
-      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
-      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
-      dest_address = @intcode.fetch(@ip + 3)
-      @intcode[dest_address] = param1_value + param2_value
-      @ip += 4
-    when Opcode::MULT
-      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
-      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
-      dest_address = @intcode.fetch(@ip + 3)
-      @intcode[dest_address] = param1_value * param2_value
-      @ip += 4
-    when Opcode::INPUT
-      value = @inputter.gets.chomp.to_i
-      dest_address = @intcode.fetch(@ip + 1)
-      @intcode[dest_address] = value
-      @ip += 2
-    when Opcode::OUTPUT
-      output_value = param_value(@ip + 1, param_modes.fetch(-1))
-      @outputter.puts output_value
-      @ip += 2
-    else
-      raise "Invalid opcode"
     end
   end
 end
