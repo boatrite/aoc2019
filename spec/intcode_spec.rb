@@ -61,9 +61,25 @@ RSpec.describe Intcode do
       expect(outputter.value).to eq 1234
     end
 
-    it 'works for day 5' do
+    it 'works for day 5 examples' do
       expect(Intcode.new([1002,4,3,4,33]).run)
         .to eq [1002,4,3,4,99]
+    end
+
+    it 'day5 executes correctly' do
+      output = `./day5.rb`
+      expect(output).to eq <<~OUTPUT
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        0
+        13346482
+      OUTPUT
     end
   end
 end
