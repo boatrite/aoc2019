@@ -29,8 +29,7 @@ class Intcode
   def run
     while @intcode[@ip] != Opcode::HALT
       current_instruction = @intcode[@ip]
-      move_count = execute(current_instruction)
-      @ip += move_count
+      execute(current_instruction)
 
       @step += 1
       @history[@step] = @intcode.clone
@@ -87,24 +86,22 @@ class Intcode
       param2_value = param_value(@ip + 2, param_modes.fetch(-2))
       dest_address = @intcode.fetch(@ip + 3)
       @intcode[dest_address] = param1_value + param2_value
-      4
+      @ip += 4
     when Opcode::MULT
       param1_value = param_value(@ip + 1, param_modes.fetch(-1))
       param2_value = param_value(@ip + 2, param_modes.fetch(-2))
       dest_address = @intcode.fetch(@ip + 3)
       @intcode[dest_address] = param1_value * param2_value
-      4
+      @ip += 4
     when Opcode::INPUT
       value = @inputter.gets.chomp.to_i
       dest_address = @intcode.fetch(@ip + 1)
       @intcode[dest_address] = value
-      2
+      @ip += 2
     when Opcode::OUTPUT
       output_value = param_value(@ip + 1, param_modes.fetch(-1))
       @outputter.puts output_value
-      2
-    when Opcode::HALT
-      0
+      @ip += 2
     else
       raise "Invalid opcode"
     end
