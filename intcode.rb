@@ -6,6 +6,8 @@ class Intcode
     MULT = 2
     INPUT = 3
     OUTPUT = 4
+    LESS_THAN = 7
+    EQUALS = 8
     HALT = 99
   end
 
@@ -63,6 +65,18 @@ class Intcode
       output_value = param_value(@ip + 1, param_modes.fetch(-1))
       @outputter.puts output_value
       @ip += 2
+    when Opcode::LESS_THAN
+      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
+      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
+      dest_address = @intcode.fetch(@ip + 3)
+      @intcode[dest_address] = param1_value < param2_value ? 1 : 0
+      @ip += 4
+    when Opcode::EQUALS
+      param1_value = param_value(@ip + 1, param_modes.fetch(-1))
+      param2_value = param_value(@ip + 2, param_modes.fetch(-2))
+      dest_address = @intcode.fetch(@ip + 3)
+      @intcode[dest_address] = param1_value == param2_value ? 1 : 0
+      @ip += 4
     else
       raise "Invalid opcode"
     end

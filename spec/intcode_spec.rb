@@ -81,5 +81,57 @@ RSpec.describe Intcode do
         13346482
       OUTPUT
     end
+
+    context 'EQUALS opcode' do
+      it 'position mode works' do
+        inputter = inputter_class.new "8\n"
+        outputter = outputter_class.new
+        Intcode.new([3,9,8,9,10,9,4,9,99,-1,8], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 1
+
+        inputter = inputter_class.new "7\n"
+        outputter = outputter_class.new
+        Intcode.new([3,9,8,9,10,9,4,9,99,-1,8], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 0
+      end
+
+      it 'immediate mode works' do
+        inputter = inputter_class.new "8\n"
+        outputter = outputter_class.new
+        Intcode.new([3,3,1108,-1,8,3,4,3,99], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 1
+
+        inputter = inputter_class.new "7\n"
+        outputter = outputter_class.new
+        Intcode.new([3,3,1108,-1,8,3,4,3,99], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 0
+      end
+    end
+
+    context 'LESS_THAN opcode' do
+      it 'position mode works' do
+        inputter = inputter_class.new "8\n"
+        outputter = outputter_class.new
+        Intcode.new([3,9,7,9,10,9,4,9,99,-1,8], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 0
+
+        inputter = inputter_class.new "7\n"
+        outputter = outputter_class.new
+        Intcode.new([3,9,7,9,10,9,4,9,99,-1,8], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 1
+      end
+
+      it 'immediate mode works' do
+        inputter = inputter_class.new "8\n"
+        outputter = outputter_class.new
+        Intcode.new([3,3,1107,-1,8,3,4,3,99], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 0
+
+        inputter = inputter_class.new "7\n"
+        outputter = outputter_class.new
+        Intcode.new([3,3,1107,-1,8,3,4,3,99], nil, nil, inputter, outputter).run
+        expect(outputter.value).to eq 1
+      end
+    end
   end
 end
