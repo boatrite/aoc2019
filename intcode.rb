@@ -1,6 +1,8 @@
 require 'io/console'
 
 class Intcode
+  attr_writer :inputter
+
   module Opcode
     ADD = 1
     MULT = 2
