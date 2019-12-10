@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
-gem "rspec"
+gem "colorize"
 gem "pry-byebug"
 gem "rgl"
+gem "rspec"
